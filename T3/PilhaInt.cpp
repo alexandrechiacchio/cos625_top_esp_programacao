@@ -6,7 +6,7 @@ class PilhaInt {
     std::vector<int> stack;
 public:
     PilhaInt(size_t size) {
-        stack.resize(size);
+        stack.reserve(size);
     };
 
     PilhaInt(PilhaInt& other) {
@@ -30,8 +30,9 @@ public:
         return stack.capacity();
     }
 
-    void redimensiona(int newSize) {
-        stack.resize(newSize);
+    void redimensiona(size_t newSize) {
+        if(newSize < stack.size()) stack.resize(newSize);
+        else stack.reserve(newSize);
     }
 
     void print(std::ostream& o) {
