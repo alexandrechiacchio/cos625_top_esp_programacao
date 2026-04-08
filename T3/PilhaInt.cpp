@@ -5,6 +5,8 @@
 class PilhaInt {
     std::vector<int> stack;
 public:
+    PilhaInt() {};
+
     PilhaInt(size_t size) {
         stack.reserve(size);
     };
@@ -31,15 +33,19 @@ public:
     }
 
     void redimensiona(size_t newSize) {
-        if(newSize < stack.size()) stack.resize(newSize);
-        else stack.reserve(newSize);
+        if (newSize < stack.capacity()){
+            if(newSize < stack.size()) stack.resize(newSize);
+            std::vector<int>(stack).swap(stack);
+        }
+        stack.reserve(newSize);
     }
 
     void print(std::ostream& o) {
         o << "[ ";
-        for (auto it : stack)
-            if(&it != &stack.back()) o << it << ", ";
-            else o << it;
+        for (auto it = stack.begin(); it != stack.end(); it++) {
+            if (it != stack.end() - 1) o << *it << ", ";
+            else o << *it;
+        }
         o << " ]";
     }
 
@@ -48,8 +54,9 @@ public:
         return *this;
     }
 
-    PilhaInt& operator=(PilhaInt u) {
-        stack = u.stack;
+    PilhaInt& operator=(const PilhaInt& u) {
+        stack = std::vector<int>(u.stack);
+        stack.reserve(u.stack.capacity());
         return *this;
     }
 };
@@ -64,14 +71,14 @@ PilhaInt embaralha(PilhaInt q) {
 
 int main() {
 
-    PilhaInt a{ 81 };
-    a << 5 << 6 << 3 << 2 << 9 << 13;
-    a.redimensiona(81); cout << a.capacidade() << endl;
-    a.redimensiona(11); cout << a.capacidade() << endl;
-    a.redimensiona(6); cout << a.capacidade() << endl;
-    a.print(cout); cout << endl;
-    a.redimensiona(3); cout << a.capacidade() << endl;
-    a.print(cout); cout << endl;
+    PilhaInt a{ 7 }, b{ 5000 }, c{ 5 };
+    a << 8 << 3 << 1 << 4 << 5;
+    for (int i = 0; i < 5000; i++)
+        b << i;
+    c = a;
+    a = b;
+    b = c;
+    cout << a.capacidade() << ", " << b.capacidade() << ", " << c.capacidade() << endl;
 
     return 0;
 }
